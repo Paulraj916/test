@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rahman Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: three columns on desktop (filters | tracks | queue), one stacked column on phones */
+:root {
+  --bg: #f6f4f8; --panel: #ffffff; --fg: #1d1a24; --muted: #6b6476; --line: #e3dfe9;
+  --accent: #6b2fd0; --accent-soft: #efe7fc; --on-accent: #ffffff;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141118; --panel: #1d1923; --fg: #ece8f2; --muted: #9d95aa; --line: #2f2938;
+    --accent: #b28cff; --accent-soft: #2c2240; --on-accent: #160f22; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141118; --panel: #1d1923; --fg: #ece8f2; --muted: #9d95aa; --line: #2f2938;
+  --accent: #b28cff; --accent-soft: #2c2240; --on-accent: #160f22; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.45 var(--body); padding-inline: 16px; padding-block: 0 32px; }
+header { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; padding-block: 20px 16px; }
+h1 { font: 800 clamp(24px, 4vw, 34px)/1 var(--display); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h1 small { display: block; font: 400 13px/1.3 var(--body); color: var(--muted); letter-spacing: 0; margin-top: 6px; }
+#q { flex: 1 1 280px; min-width: 0; padding: 11px 14px; font: inherit; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--fg); }
+#q:focus-visible, button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.preview-note { background: var(--accent-soft); border-radius: 10px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; }
+main { display: grid; grid-template-columns: 220px minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+.panel h2 { font: 600 16px var(--display); margin: 0 0 10px; }
+fieldset { border: 0; padding: 0; margin: 0 0 16px; display: grid; gap: 3px; }
+legend { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+fieldset label { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+fieldset label span { margin-left: auto; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+select { width: 100%; padding: 7px; font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); }
+.status { color: var(--muted); margin: 0 0 8px; font-variant-numeric: tabular-nums; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.linkish { background: none; border: 0; color: var(--accent); padding: 0; font: inherit; cursor: pointer; }
+#list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+#list li { display: flex; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; }
+.year { font: 600 13px var(--display); color: var(--muted); width: 3.2em; flex: none; font-variant-numeric: tabular-nums; }
+.meta { flex: 1; min-width: 0; }
+.t { font-weight: 700; overflow-wrap: anywhere; }
+.s { color: var(--muted); font-size: 13px; }
+.chip { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--accent-soft); color: var(--fg); margin-left: 4px; vertical-align: 1px; }
+button.add { flex: none; padding: 6px 14px; border-radius: 99px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); font: inherit; font-size: 14px; cursor: pointer; }
+button.add.on { background: transparent; color: var(--accent); }
+#more { margin-top: 10px; width: 100%; padding: 10px; border: 1px dashed var(--line); background: transparent; color: var(--fg); border-radius: 10px; font: inherit; cursor: pointer; }
+#queue-list { margin: 0 0 12px; padding-left: 22px; max-height: 45vh; overflow: auto; font-size: 14px; }
+#queue-list li { margin-bottom: 6px; }
+#queue-list a { color: var(--accent); font-size: 12px; margin-right: 6px; }
+#queue-list button { background: none; border: 0; color: var(--muted); cursor: pointer; font: inherit; font-size: 12px; padding: 0; }
+.empty { color: var(--muted); font-size: 14px; }
+.actions { display: grid; gap: 6px; }
+.btn { display: block; text-align: center; padding: 9px 12px; border-radius: 10px; background: var(--accent); color: var(--on-accent); text-decoration: none; border: 1px solid var(--accent); font: inherit; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+#copy-box { width: 100%; height: 90px; margin-top: 8px; font: 12px/1.4 ui-monospace, monospace; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; }
+.note { color: var(--muted); font-size: 12px; margin: 10px 0 0; }
+@media (max-width: 960px) {
+  main { grid-template-columns: minmax(0, 1fr); }
+  .panel { position: static; }
+  #queue { order: -1; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Rahman Roadmap<small id="tagline"></small></h1>
+  <input id="q" type="search" placeholder="Search a song or film… try “roja” or “jai ho”" autocomplete="off" aria-label="Search songs">
+</header>
+<p class="preview-note">Early version. Playing links search YouTube and Spotify for now, because the exact video and track IDs haven’t been collected yet.</p>
+
+<main>
+  <aside class="panel" id="filters" aria-label="Filters">
+    <fieldset id="f-lang"><legend>Language</legend></fieldset>
+    <fieldset id="f-version"><legend>Version</legend></fieldset>
+    <fieldset id="f-decade"><legend>Decade</legend></fieldset>
+    <fieldset><legend>Film / album</legend><select id="f-film" aria-label="Film or album"><option value="">All films</option></select></fieldset>
+    <button class="linkish" id="reset">Clear filters</button>
+  </aside>
+
+  <section aria-label="Songs">
+    <p class="status"><span id="count"></span><button class="linkish" id="add-all">Add all shown to queue</button></p>
+    <ul id="list"></ul>
+    <button id="more" hidden>Show more</button>
+  </section>
+
+  <aside class="panel" id="queue" aria-label="Your queue">
+    <h2>Queue · <span id="qn">0</span></h2>
+    <ol id="queue-list"></ol>
+    <p class="empty" id="q-empty">Add songs to build a queue.</p>
+    <div class="actions">
+      <a class="btn" id="yt" target="_blank" rel="noopener">Start on YouTube Music</a>
+      <a class="btn ghost" id="sp" target="_blank" rel="noopener">Start on Spotify</a>
+      <button class="btn ghost" id="copy">Copy song list</button>
+      <button class="btn ghost" id="clear">Clear queue</button>
+    </div>
+    <textarea id="copy-box" readonly hidden aria-label="Song list to copy"></textarea>
+    <p class="note">One-click full queues arrive once each song has its YouTube and Spotify ID. Until then the buttons open the first song, and each queued song has its own links.</p>
+  </aside>
+</main>
+
+<script>
+function start(RAW) {
+const songs = RAW.map(([title, film, lang, year, dubOf], i) => ({
+  id: i, title, film, lang, year, dubOf,
+  decade: `${Math.floor(year / 10) * 10}s`,
+  version: dubOf ? "Dubbed" : "Original",
+}));
+const norm = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+  .replace(/aa/g, "a").replace(/ee/g, "i").replace(/oo/g, "u").replace(/[^a-z0-9 ]/g, " ");
+for (const s of songs) s.hay = norm(`${s.title} ${s.film} ${s.lang} ${s.year}`);
+
+const $ = id => document.getElementById(id);
+const PAGE = 150;
+let limit = PAGE;
+const sel = { lang: new Set(), version: new Set(), decade: new Set() };
+let queue = [];
+try { queue = JSON.parse(localStorage.getItem("rr-queue")) || []; } catch {}
+const save = () => { try { localStorage.setItem("rr-queue", JSON.stringify(queue)); } catch {} };
+
+const films = new Set(songs.map(s => s.film));
+$("tagline").textContent = `${songs.length.toLocaleString()} tracks · ${films.size} films and albums · ${songs[0].year}–${songs[songs.length - 1].year}`;
+
+function buildChecks(key, box, order) {
+  const counts = new Map();
+  for (const s of songs) counts.set(s[key], (counts.get(s[key]) || 0) + 1);
+  const keys = [...counts.keys()].sort(order || ((a, b) => counts.get(b) - counts.get(a)));
+  for (const k of keys) {
+    const label = document.createElement("label");
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.id = `f-${key}-${k}`; cb.value = k;
+    cb.onchange = () => { cb.checked ? sel[key].add(k) : sel[key].delete(k); limit = PAGE; render(); };
+    const n = document.createElement("span"); n.textContent = counts.get(k).toLocaleString();
+    label.append(cb, k, n);
+    box.append(label);
+  }
+}
+buildChecks("lang", $("f-lang"));
+buildChecks("version", $("f-version"));
+buildChecks("decade", $("f-decade"), (a, b) => a.localeCompare(b));
+const filmYear = new Map();
+for (const s of songs) if (!filmYear.has(s.film)) filmYear.set(s.film, s.year);
+for (const [f, y] of [...filmYear].sort((a, b) => a[0].localeCompare(b[0]))) {
+  const o = document.createElement("option"); o.value = f; o.textContent = `${f} (${y})`; $("f-film").append(o);
+}
+$("f-film").onchange = () => { limit = PAGE; render(); };
+
+function shown() {
+  const words = norm($("q").value).split(/\s+/).filter(Boolean);
+  const film = $("f-film").value;
+  return songs.filter(s =>
+    words.every(w => s.hay.includes(w)) &&
+    (!film || s.film === film) &&
+    ["lang", "version", "decade"].every(k => sel[k].size === 0 || sel[k].has(s[k])));
+}
+
+function render() {
+  const res = shown();
+  $("count").textContent = `${res.length.toLocaleString()} of ${songs.length.toLocaleString()} tracks`;
+  const list = $("list"); list.innerHTML = "";
+  for (const s of res.slice(0, limit)) {
+    const li = document.createElement("li");
+    const y = document.createElement("span"); y.className = "year"; y.textContent = s.year;
+    const meta = document.createElement("div"); meta.className = "meta";
+    const t = document.createElement("div"); t.className = "t"; t.textContent = s.title;
+    const sub = document.createElement("div"); sub.className = "s"; sub.textContent = `${s.film} · ${s.lang}`;
+    if (s.dubOf) { const c = document.createElement("span"); c.className = "chip"; c.textContent = `dub of ${s.dubOf}`; sub.append(c); }
+    meta.append(t, sub);
+    const on = queue.includes(s.id);
+    const b = document.createElement("button"); b.className = "add" + (on ? " on" : "");
+    b.textContent = on ? "Added" : "Add"; b.setAttribute("aria-pressed", on);
+    b.onclick = () => toggle(s.id);
+    li.append(y, meta, b); list.append(li);
+  }
+  $("more").hidden = res.length <= limit;
+  $("more").textContent = `Show more (${(res.length - limit).toLocaleString()} left)`;
+  renderQueue();
+}
+
+const query = s => `${s.title} ${s.film} A.R. Rahman`;
+const ytm = s => `https://music.youtube.com/search?q=${encodeURIComponent(query(s))}`;
+const spot = s => `https://open.spotify.com/search/${encodeURIComponent(`${s.title} ${s.film}`)}`;
+
+function renderQueue() {
+  const items = queue.map(i => songs[i]).filter(Boolean);
+  $("qn").textContent = items.length;
+  $("q-empty").hidden = items.length > 0;
+  const ol = $("queue-list"); ol.innerHTML = "";
+  for (const s of items) {
+    const li = document.createElement("li");
+    const name = document.createElement("div"); name.textContent = `${s.title} · ${s.film}`;
+    const yt = document.createElement("a"); yt.href = ytm(s); yt.target = "_blank"; yt.rel = "noopener"; yt.textContent = "YouTube Music";
+    const sp = document.createElement("a"); sp.href = spot(s); sp.target = "_blank"; sp.rel = "noopener"; sp.textContent = "Spotify";
+    const rm = document.createElement("button"); rm.textContent = "Remove"; rm.onclick = () => toggle(s.id);
+    li.append(name, yt, sp, rm); ol.append(li);
+  }
+  for (const id of ["yt", "sp"]) $(id).setAttribute("aria-disabled", items.length === 0);
+  if (items.length) { $("yt").href = ytm(items[0]); $("sp").href = spot(items[0]); }
+  else { $("yt").removeAttribute("href"); $("sp").removeAttribute("href"); }
+  $("copy").disabled = $("clear").disabled = items.length === 0;
+  $("copy-box").value = items.map(s => `${s.title} - A.R. Rahman (${s.film})`).join("\n");
+}
+
+function toggle(id) {
+  queue = queue.includes(id) ? queue.filter(q => q !== id) : [...queue, id];
+  save(); render();
+}
+
+$("q").addEventListener("input", () => { limit = PAGE; render(); });
+$("more").onclick = () => { limit += PAGE; render(); };
+$("add-all").onclick = () => {
+  const ids = shown().map(s => s.id);
+  if (ids.length > 300) { $("count").textContent = `Narrow it down first: ${ids.length.toLocaleString()} tracks is more than 300.`; return; }
+  queue = [...queue, ...ids.filter(i => !queue.includes(i))]; save(); render();
+};
+$("reset").onclick = () => {
+  for (const k in sel) sel[k].clear();
+  document.querySelectorAll("#filters input").forEach(cb => cb.checked = false);
+  $("f-film").value = ""; $("q").value = ""; limit = PAGE; render();
+};
+$("clear").onclick = () => { queue = []; save(); render(); };
+$("copy").onclick = async () => {
+  const box = $("copy-box"); box.hidden = false;
+  try { await navigator.clipboard.writeText(box.value); $("copy").textContent = "Copied"; }
+  catch { box.select(); $("copy").textContent = "Press Ctrl/Cmd+C to copy"; }
+  setTimeout(() => $("copy").textContent = "Copy song list", 2000);
+};
+render();
+}
+
+fetch("data/rahman.json")
+  .then(r => r.json())
+  .then(start)
+  .catch(err => { document.getElementById("count").textContent = `Could not load songs: ${err.message}`; });
+</script>
+</body>
+</html>
